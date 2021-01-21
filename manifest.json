@@ -1,0 +1,6 @@
+{
+    "manifest_version": 2,
+    "name": "Web Time Tracker",
+    "version":"1.0",
+    "description":"Keeps track of time spent on various domains"
+}
