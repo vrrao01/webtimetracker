@@ -17,3 +17,16 @@ new Chart(document.getElementById("pie-chart"), {
       }
     }
 });
+
+chrome.storage.local.get(null,function(siteList){
+  let allKeys = Object.keys(siteList);
+    console.log(allKeys);
+  for (let i = 0; i<allKeys.length;i++ ){
+    let webURL = allKeys[i];
+    console.log("Spent "+ siteList[webURL]+ " on "+  webURL)
+  }
+});
+
+
+
+
