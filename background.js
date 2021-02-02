@@ -9,7 +9,7 @@ function updateTime(){
         let myObj = {};
         myObj[domain] = "";
         chrome.storage.local.get(domain,function(storedObject){
-            let timeSoFar = 0;
+            timeSoFar = 0;
             if(storedObject[domain]){
                 timeSoFar = storedObject[domain]+1;
                 myObj[domain] = timeSoFar;
@@ -21,11 +21,13 @@ function updateTime(){
                 timeSoFar++;
                 myObj[domain] = timeSoFar;
                 chrome.storage.local.set(myObj,function(){
-                    console.log("Set "+domain+" at "+myObj[domain]);
+                    console.log("Set "+domain+" at "+myObj[domain]);    
                 });
             }
         });
     });
+    chrome.browserAction.setBadgeText({'text':timeSoFar.toString()});
 };
+
 
 setInterval(updateTime,1000);
