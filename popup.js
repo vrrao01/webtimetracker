@@ -21,8 +21,8 @@ chrome.storage.local.get(null,function(siteList){
         nDA.appendChild(nDB).appendChild(nDC);
         nDA.appendChild(nDD).appendChild(nDE);
         insI.insertBefore(nDA,insB);
-        console.log(webURL)
     }
+    document.getElementById('btn').setAttribute('disabled','true');
     })
 });
 
