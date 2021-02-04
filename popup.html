@@ -8,48 +8,27 @@
         <script src="Chart.min.js"></script>
 
     </head>
-    <body style="min-width: 300px;min-height: 300px;">
+    <body style="min-width: 350px;">
         <div class="container">
             <h4 class="mt-2 text-center">Web-Time-Tracker</h4>
-            <button class="btn btn-primary" id="btn">See Detailed View</button>
+            <button class="btn" style="background-color:rgba(216,191,216,0.5);" id="detailBtn" data-toggle="collapse" data-target="#webListDiv">See Detailed View</button>
             <canvas id="pie-chart" width="100%" height="100%" class="my-1"></canvas>
         </div>
-        <script src="popup.js"></script>
-        <!-- <table id="tableView" border="2">
-        <div id="insInside">
-            <div id="insBefore"></div>
-        </div> -->
-        <div class="container">
-            <table class="table table-hover">
-                <thead>
+        <div class="collapse container" id="webListDiv">
+            <table class="table table-hover small" >
+                <thead style="background-color:rgba(216,191,216,0.5);">
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Website</th>
+                    <th scope="col">Time Spent</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                <tbody id="webList" >
+
                 </tbody>
               </table>
         </div>
         </table>
+        <script src="popup.js"></script>
     </body>
 </html>
