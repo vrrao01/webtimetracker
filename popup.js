@@ -28,7 +28,7 @@ chrome.storage.local.get(null,function(siteList){
 
 setTimeout(function(){
   new Chart(document.getElementById("pie-chart"), {
-    type: 'pie',
+    type: 'doughnut',
     data: {
       labels: allKeys,
       datasets: [{
@@ -43,7 +43,9 @@ setTimeout(function(){
       },
       legend:{
           display:false
-      }
+      },
+      circumference : Math.PI,
+      rotation: Math.PI
     }
 });
 },10)
