@@ -30,7 +30,13 @@ function secondsToString(seconds,compressed=false){
   };
 
 function getDateString(nDate){
-  return `${nDate.getDate()}${nDate.getMonth()}${nDate.getFullYear()}`
+  let nDateDate=nDate.getDate();
+  let nDateMonth=nDate.getMonth()+1;
+  let nDateYear=nDate.getFullYear();
+  if(nDateDate<10){nDateDate="0"+nDateDate;};
+  if(nDateMonth<10){nDateMonth="0"+nDateMonth;};
+  let presentDate = ""+nDateYear+"-"+nDateMonth+"-"+nDateDate;
+  return presentDate;
 }
 function getDomain(tablink){
     let url =  tablink[0].url;

@@ -9,7 +9,7 @@
         <script src="Chart.min.js"></script>
 
     </head>
-    <body style="min-width: 350px;">
+    <body style="min-width: 350px;min-height: 350px;">
         <div class="container">
             <h4 class="mt-2 text-center">Web-Time-Tracker</h4>
         </div>
@@ -35,7 +35,17 @@
             <div class="tab-pane fade show active" id="todayPanel" role="tabpanel">
               <div class="container text-center">
                 <canvas id="pie-chart" width="100%" height="100%" class="my-1"></canvas>
-                <button class="btn my-3 text-light"  id="detailBtn" data-toggle="collapse" data-target="#webListDiv"><span class="small">See Detailed View</span></button>
+                <div class="row">
+                  <div class="col align-self-center">
+                    <button class="btn my-3 "  id="detailBtn" data-toggle="collapse" data-target="#webListDiv"><span class="small font-weight-bold">See Detailed View</span></button>
+                  </div>
+                  <div class="col">
+                    <div class="card mb-2">
+                      <div class="card-header font-weight-bold py-1">Total Time Spent</div>
+                      <div class="card-body py-1"><span id="totalTimeToday"></span></div>
+                    </div>
+                  </div>
+                </div>
                 <div class="collapse " id="webListDiv">
                     <table class="table table-hover " >
                         <thead style="background-color:#a0c1b8">
@@ -53,38 +63,78 @@
               </div>
             </div>
             <div class="tab-pane fade  " id="dailyReport" role="tabpanel">
-              
+              <div class="container">
+                <div class="row mt-2">
+                  <div class="col-8">
+                    <div class="form-group">
+                      <label for="dateValue">Select a Date:</label>
+                      <input type="date" class="form-control form-control-sm" id="dateValue">
+                    </div>
+                  </div>
+                  <div class="col align-self-center">
+                    <button class="btn" id="dateSubmit"> Submit </button>
+                  </div>
+                </div>
+                <div class="alert alert-danger d-none" id="tryAgain">
+                  Invalid date! Please try again.
+                </div>
+                <canvas id="differentDayChart" width="100%" height="100%" class="my-1"></canvas>
+              </div>
+              <div class="container">
+                <div class="row d-none" id="statsRow">
+                  <div class="col align-self-center">
+                    <button class="btn my-3 "  id="detailBtn2" data-toggle="collapse" data-target="#webListDiv2"><span class="small font-weight-bold">See Detailed View</span></button>
+                  </div>
+                  <div class="col">
+                    <div class="card mb-2">
+                      <div class="card-header font-weight-bold py-1">Total Time Spent</div>
+                      <div class="card-body py-1"><span id="totalTimeThatDay"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="container">
+                <div class="collapse " id="webListDiv2">
+                  <table class="table table-hover text-center " >
+                      <thead style="background-color:#a0c1b8">
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Website</th>
+                          <th scope="col">Time Spent</th>
+                        </tr>
+                      </thead>
+                      <tbody id="webList2" >
+      
+                      </tbody>
+                    </table>
+              </div>
+              </div>
             </div>
             <div class="tab-pane fade " id="oneWeek" role="tabpanel">
-              
+              <canvas id="pastWeek" width="100%" height="100%" class="my-3"></canvas>
+              <div class="container">
+                <div class="row mb-2">
+                  <div class="col">
+                    <div class="card">
+                      <div class="card-header bg-warning text-center font-weight-bold">Weekly Average</div>
+                      <div class="card-body text-center" id="weekAvg"></div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card">
+                      <div class="card-header bg-danger text-light text-center font-weight-bold">Maximum Time </div>
+                      <div class="card-body text-center" id="weekMax"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             </div>
 
           </div>
         </div>
 
-          <!-- <div class="container text-center collapse show" data-parent="#tabs" id="todayPanel">
-            <canvas id="pie-chart" width="100%" height="100%" class="my-1"></canvas>
-            <button class="btn my-3" style="background-color:rgba(216,191,216,0.5);" id="detailBtn" data-toggle="collapse" data-target="#webListDiv"><span class="small">See Detailed View</span></button>
-            <div class="collapse " id="webListDiv">
-                <table class="table table-hover small" >
-                    <thead style="background-color:rgba(216,191,216,0.5);">
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Website</th>
-                        <th scope="col">Time Spent</th>
-                      </tr>
-                    </thead>
-                    <tbody id="webList" >
-    
-                    </tbody>
-                  </table>
-            </div>
-          </div> Today Panel -->
-          <!-- <div class="container text-center collapse" data-parent="#tabs" id="dailyReport">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptas cumque, libero sunt excepturi optio aliquam soluta iusto facere, voluptate quia eum tempore dolorem provident! Doloremque aperiam optio laboriosam vitae. Cupiditate!
-          </div> -->
-        </div>
-        
         <script src="popup.js"></script>
+
     </body>
 </html>

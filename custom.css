@@ -19,11 +19,28 @@
     color: white !important;
 }
 
-#detailBtn{
+#detailBtn,#detailBtn2{
     background-color: #719fb0;
+    color:#212529;
     transition: 1s;
 }
 
-#detailBtn:hover{
+#detailBtn:hover,#detailBtn2:hover{
     background-color: #0d2e3a;
+    color:white;
+}
+
+.card-header{
+    background-color: #719fb0 ;
+}
+
+#dateSubmit{
+    background-color: #719fb0;
+    color:#212529;
+    transition: 1s;
+}
+
+#dateSubmit:hover{
+    background-color: #0d2e3a;
+    color:white;
 }
