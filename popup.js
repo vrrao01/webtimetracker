@@ -1,3 +1,7 @@
+function getDateString(nDate){
+  return `${nDate.getDate()}${nDate.getMonth()}${nDate.getFullYear()}`
+}
+
 function secondsToString(seconds,compressed=false){
   let hours = parseInt(seconds/3600);
   seconds = seconds%3600;
@@ -31,15 +35,16 @@ function secondsToString(seconds,compressed=false){
 var allKeys, timeSpent, totalTimeSpent,sortedTimeList,topCount,topDataSet,topLabels;
 var color = ["rgba(255, 0, 0, 1)","rgb(255, 51, 0)","rgb(255, 102, 0)","rgb(255, 153, 0)","rgb(255, 204, 0)","rgb(255, 255, 0)","rgb(204, 255, 0)","rgb(153, 255, 0)","rgb(102, 255, 0)","rgb(51, 255, 0)"];
 totalTimeSpent = 0;
-chrome.storage.local.get(null,function(siteList){
-  allKeys = Object.keys(siteList);
+var today = getDateString(new Date())
+chrome.storage.local.get(null,function(storedItems){
+  allKeys = Object.keys(storedItems[today]);
   timeSpent = [];
   sortedTimeList = [];
   for (let i = 0; i<allKeys.length;i++ ){
     let webURL = allKeys[i];
-    timeSpent.push(siteList[webURL]);
-    totalTimeSpent+= siteList[webURL];
-    sortedTimeList.push([webURL,siteList[webURL]]);
+    timeSpent.push(storedItems[today][webURL]);
+    totalTimeSpent+= storedItems[today][webURL];
+    sortedTimeList.push([webURL,storedItems[today][webURL]]);
   }
   sortedTimeList.sort((a,b)=>b[1]-a[1]);
   console.log(sortedTimeList);

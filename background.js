@@ -29,6 +29,9 @@ function secondsToString(seconds,compressed=false){
     }
   };
 
+function getDateString(nDate){
+  return `${nDate.getDate()}${nDate.getMonth()}${nDate.getFullYear()}`
+}
 function getDomain(tablink){
     let url =  tablink[0].url;
     return url.split("/")[2];
@@ -37,25 +40,39 @@ function getDomain(tablink){
 function updateTime(){
     chrome.tabs.query({active:true},function(activeTab){
         let domain = getDomain(activeTab);
+        let today = new Date();
+        let presentDate = getDateString(today);
         let myObj = {};
+        myObj[presentDate]={};
+        myObj[presentDate][domain] = "";
         let timeSoFar = 0;
-        myObj[domain] = "";
-        chrome.storage.local.get(domain,function(storedObject){
-            if(storedObject[domain]){
-                timeSoFar = storedObject[domain]+1;
-                myObj[domain] = timeSoFar;
-                chrome.storage.local.set(myObj,function(){
-                    console.log("Set "+domain+" at "+myObj[domain]);
+        chrome.storage.local.get(presentDate,function(storedObject){
+            if(storedObject[presentDate]){
+              if(storedObject[presentDate][domain]){
+                timeSoFar = storedObject[presentDate][domain]+1;
+                storedObject[presentDate][domain] = timeSoFar;
+                chrome.storage.local.set(storedObject,function(){
+                    console.log("Set "+domain+" at "+storedObject[presentDate][domain]);
                     chrome.browserAction.setBadgeText({'text':secondsToString(timeSoFar,true)});
                 });
+              }
+              else{
+                timeSoFar++;
+                storedObject[presentDate][domain] = timeSoFar;
+                chrome.storage.local.set(storedObject,function(){
+                  console.log("Set "+domain+" at "+storedObject[presentDate][domain]);
+                  chrome.browserAction.setBadgeText({'text':secondsToString(timeSoFar,true)});
+                })
+              }
             }
             else{
-                timeSoFar++;
-                myObj[domain] = timeSoFar;
-                chrome.storage.local.set(myObj,function(){
-                    console.log("Set "+domain+" at "+myObj[domain]);  
-                    chrome.browserAction.setBadgeText({'text':secondsToString(timeSoFar,true)});  
-                });
+              timeSoFar++;
+              storedObject[presentDate] = {};
+              storedObject[presentDate][domain] = timeSoFar;
+              chrome.storage.local.set(storedObject,function(){
+                console.log("Set "+domain+" at "+storedObject[presentDate][domain]);
+                chrome.browserAction.setBadgeText({'text':secondsToString(timeSoFar,true)});
+              })
             }
         });
     });
