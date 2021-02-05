@@ -1,0 +1,29 @@
+#todayTab,#dailyTab,#weekTab{
+    background-color: rgba(114,106,149,0.3);
+    color:black;
+    transition: 1s;
+}
+
+#todayTab:hover{
+    background-color: rgba(53,31,57,0.5);
+}
+#dailyTab:hover{
+    background-color: rgba(53,31,57,0.5);
+}
+#weekTab:hover{
+    background-color: rgba(53,31,57,0.5);
+}
+
+.nav-link.active{
+    background-color: rgba(53,31,57,0.75) !important;
+    color: white !important;
+}
+
+#detailBtn{
+    background-color: #719fb0;
+    transition: 1s;
+}
+
+#detailBtn:hover{
+    background-color: #0d2e3a;
+}
