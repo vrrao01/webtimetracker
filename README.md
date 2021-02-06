@@ -1,3 +1,3 @@
-# webtimetracker
+# Web-Time Tracker 
 
-## this basically tracks your time on each website
+A Chrome Extension that keeps track of the time you spend on various websites, each day.
