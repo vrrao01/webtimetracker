@@ -1,3 +1,11 @@
+function isValidURL(givenURL){
+  if(givenURL.includes(".")){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
 function secondsToString(seconds,compressed=false){
     let hours = parseInt(seconds/3600);
     seconds = seconds%3600;
@@ -46,7 +54,8 @@ function getDomain(tablink){
 function updateTime(){
     chrome.tabs.query({"active":true,"lastFocusedWindow": true},function(activeTab){
         let domain = getDomain(activeTab);
-        let today = new Date();
+        if(isValidURL(domain)){
+          let today = new Date();
         let presentDate = getDateString(today);
         let myObj = {};
         myObj[presentDate]={};
@@ -81,6 +90,8 @@ function updateTime(){
               })
             }
         });
+        }
+        
     });
 
     // console.log(timeSoFar);
@@ -89,7 +100,7 @@ function updateTime(){
 var intervalID;
 
 intervalID = setInterval(updateTime,1000);
-setInterval(checkFocus,900)
+setInterval(checkFocus,500)
 
 function checkFocus(){
   chrome.windows.getCurrent(function(window){
