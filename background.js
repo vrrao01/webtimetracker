@@ -44,7 +44,7 @@ function getDomain(tablink){
 };
 
 function updateTime(){
-    chrome.tabs.query({active:true},function(activeTab){
+    chrome.tabs.query({"active":true,"lastFocusedWindow": true},function(activeTab){
         let domain = getDomain(activeTab);
         let today = new Date();
         let presentDate = getDateString(today);
@@ -86,5 +86,23 @@ function updateTime(){
     // console.log(timeSoFar);
 };
 
+var intervalID;
 
-setInterval(updateTime,1000);
+intervalID = setInterval(updateTime,1000);
+setInterval(checkFocus,900)
+
+function checkFocus(){
+  chrome.windows.getCurrent(function(window){
+    if(window.focused){
+      if(!intervalID){
+        intervalID = setInterval(updateTime,1000);
+      }
+    }
+    else{
+      if(intervalID){
+        clearInterval(intervalID);
+        intervalID=null;
+      }
+    }
+  });
+}
