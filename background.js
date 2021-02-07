@@ -48,7 +48,7 @@ function getDateString(nDate){
   let nDateYear=nDate.getFullYear();
   if(nDateDate<10){nDateDate="0"+nDateDate;};
   if(nDateMonth<10){nDateMonth="0"+nDateMonth;};
-  let presentDate = ""+nDateYear+"-"+nDateMonth+"-"+nDateDate;
+  let presentDate = nDateYear+"-"+nDateMonth+"-"+nDateDate;
   return presentDate;
 }
 function getDomain(tablink){
