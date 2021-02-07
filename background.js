@@ -1,6 +1,11 @@
 function isValidURL(givenURL){
-  if(givenURL.includes(".")){
-    return true;
+  if(givenURL){
+    if(givenURL.includes(".")){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
   else{
     return false;
@@ -47,8 +52,13 @@ function getDateString(nDate){
   return presentDate;
 }
 function getDomain(tablink){
+  if(tablink){
     let url =  tablink[0].url;
     return url.split("/")[2];
+  }
+  else{
+    return null;
+  }
 };
 
 function updateTime(){
@@ -90,8 +100,10 @@ function updateTime(){
               })
             }
         });
-        }else
-      {chrome.browserAction.setBadgeText({'text':''});}
+        }
+      else{
+        chrome.browserAction.setBadgeText({'text':''});
+      }
     });
 
     // console.log(timeSoFar);
