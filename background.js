@@ -24,7 +24,7 @@ function secondsToString(seconds,compressed=false){
       timeString += minutes + " min ";
     }
     if(seconds){
-      timeString += seconds+ " sec "
+      timeString += seconds+ " sec ";
     }
     if(!compressed){
       return timeString;
@@ -101,10 +101,9 @@ function updateTime(){
             }
         });
         }
-        else{
-          chrome.browserAction.setBadgeText({'text':""})
-        }
-        
+      else{
+        chrome.browserAction.setBadgeText({'text':''});
+      }
     });
 
     // console.log(timeSoFar);
