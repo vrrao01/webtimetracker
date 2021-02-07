@@ -217,7 +217,7 @@ document.getElementById('weekTab').addEventListener('click',function(){
       timeEachDay.push(dayTime);
       weeksTotalTime += dayTime;
     }
-    let weeklyAverage = weeksTotalTime/noOfDays;
+    let weeklyAverage = parseInt(weeksTotalTime/noOfDays);
     weeklyAverage = secondsToString(weeklyAverage);
     let weeklyMax = Math.max.apply(Math,timeEachDay);
     weeklyMax = secondsToString(weeklyMax);
