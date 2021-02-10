@@ -42,7 +42,7 @@ function secondsToString(seconds,compressed=false){
     }
   }
 };
-var allKeys, timeSpent, totalTimeSpent,sortedTimeList,topCount,topDataSet,topLabels;
+var allKeys, timeSpent, totalTimeSpent,sortedTimeList,topCount,topDataSet,topLabels,dateChart;
 var color = ["rgba(255, 0, 0, 1)","rgb(255, 51, 0)","rgb(255, 102, 0)","rgb(255, 153, 0)","rgb(255, 204, 0)","rgb(255, 255, 0)","rgb(204, 255, 0)","rgb(153, 255, 0)","rgb(102, 255, 0)","rgb(51, 255, 0)"];
 totalTimeSpent = 0;
 var today = getDateString(new Date())
@@ -123,6 +123,7 @@ chrome.storage.local.get(null,function(items){
   calendar.max = maxDate;
 });
 
+
 document.getElementById("dateSubmit").addEventListener('click',function(){
   const calendar = document.getElementById("dateValue");
   if(calendar.value===""){
@@ -148,7 +149,10 @@ document.getElementById("dateSubmit").addEventListener('click',function(){
         thatDayTotal+= times[i][1];
       }
       let chartTitle = "Top Visited Sites on "+givenDate;
-      new Chart(document.getElementById("differentDayChart"), {
+      if(dateChart){
+        dateChart.destroy()
+      }
+       dateChart = new Chart(document.getElementById("differentDayChart"), {
         type: 'doughnut',
         data: {
           labels: dataSetLabels,
@@ -173,6 +177,9 @@ document.getElementById("dateSubmit").addEventListener('click',function(){
     document.getElementById("statsRow").classList.remove("d-none");
     document.getElementById("totalTimeThatDay").innerText = secondsToString(thatDayTotal);
     const webList2 = document.getElementById("webList2");
+    while (webList2.firstChild) {
+      webList2.removeChild(webList2.lastChild);
+    }
     for(let i=0;i<times.length;i++){
       let row = document.createElement('tr');
       let col1 = document.createElement('td');
