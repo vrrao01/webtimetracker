@@ -127,72 +127,80 @@ chrome.storage.local.get(null,function(items){
 document.getElementById("dateSubmit").addEventListener('click',function(){
   const calendar = document.getElementById("dateValue");
   if(calendar.value===""){
+    document.getElementById("tryAgain").innerText = "Invalid date! Please try again.";
     document.getElementById("tryAgain").classList.remove("d-none");
   }
   else{
     document.getElementById("tryAgain").classList.add("d-none");
     let givenDate = calendar.value;
     chrome.storage.local.get(givenDate,function(thatDay){
-      let sites = Object.keys(thatDay[givenDate]);
-      let times=[];
-      for(let i=0;i<sites.length;i++){
-        times.push([sites[i],thatDay[givenDate][sites[i]]]);
+      if(thatDay[givenDate] == null){
+        document.getElementById("tryAgain").innerText = "No records exist for this day!";
+        document.getElementById("tryAgain").classList.remove("d-none");
       }
-      times.sort(function(a,b){return b[1]-a[1]});
-      let topTen = times.length>10? 10:times.length;
-      let dataSet = [];
-      let thatDayTotal = 0;
-      let dataSetLabels = [];
-      for(let i=0;i<topTen;i++){
-        dataSet.push(times[i][1]);
-        dataSetLabels.push(times[i][0]);
-        thatDayTotal+= times[i][1];
-      }
-      let chartTitle = "Top Visited Sites on "+givenDate;
-      if(dateChart){
-        dateChart.destroy()
-      }
-       dateChart = new Chart(document.getElementById("differentDayChart"), {
-        type: 'doughnut',
-        data: {
-          labels: dataSetLabels,
-          datasets: [{
-            label: "Time Spent",
-            backgroundColor: color,
-            data: dataSet
-          }]
-        },
-        options: {
-          title: {
-            display: true,
-            text: chartTitle
-          },
-          legend:{
-              display:true
-          },
-          circumference : Math.PI,
-          rotation: Math.PI
+      else{
+        let sites = Object.keys(thatDay[givenDate]);
+        let times=[];
+        for(let i=0;i<sites.length;i++){
+          times.push([sites[i],thatDay[givenDate][sites[i]]]);
         }
-    });
-    document.getElementById("statsRow").classList.remove("d-none");
-    document.getElementById("totalTimeThatDay").innerText = secondsToString(thatDayTotal);
-    const webList2 = document.getElementById("webList2");
-    while (webList2.firstChild) {
-      webList2.removeChild(webList2.lastChild);
-    }
-    for(let i=0;i<times.length;i++){
-      let row = document.createElement('tr');
-      let col1 = document.createElement('td');
-      col1.innerText = i+1;
-      row.appendChild(col1);
-      let col2 = document.createElement('td');
-      col2.innerText = times[i][0];
-      row.appendChild(col2);
-      let col3 = document.createElement('td');
-      col3.innerText = secondsToString(times[i][1]);
-      row.appendChild(col3);
-      webList2.appendChild(row);
-    }
+        times.sort(function(a,b){return b[1]-a[1]});
+        let topTen = times.length>10? 10:times.length;
+        let dataSet = [];
+        let thatDayTotal = 0;
+        let dataSetLabels = [];
+        for(let i=0;i<topTen;i++){
+          dataSet.push(times[i][1]);
+          dataSetLabels.push(times[i][0]);
+          thatDayTotal+= times[i][1];
+        }
+        let chartTitle = "Top Visited Sites on "+givenDate;
+        if(dateChart){
+          dateChart.destroy()
+        }
+         dateChart = new Chart(document.getElementById("differentDayChart"), {
+          type: 'doughnut',
+          data: {
+            labels: dataSetLabels,
+            datasets: [{
+              label: "Time Spent",
+              backgroundColor: color,
+              data: dataSet
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: chartTitle
+            },
+            legend:{
+                display:true
+            },
+            circumference : Math.PI,
+            rotation: Math.PI
+          }
+      });
+      document.getElementById("statsRow").classList.remove("d-none");
+      document.getElementById("totalTimeThatDay").innerText = secondsToString(thatDayTotal);
+      const webList2 = document.getElementById("webList2");
+      while (webList2.firstChild) {
+        webList2.removeChild(webList2.lastChild);
+      }
+      for(let i=0;i<times.length;i++){
+        let row = document.createElement('tr');
+        let col1 = document.createElement('td');
+        col1.innerText = i+1;
+        row.appendChild(col1);
+        let col2 = document.createElement('td');
+        col2.innerText = times[i][0];
+        row.appendChild(col2);
+        let col3 = document.createElement('td');
+        col3.innerText = secondsToString(times[i][1]);
+        row.appendChild(col3);
+        webList2.appendChild(row);
+      }   
+      }
+     
     });
   }
 });
@@ -246,7 +254,7 @@ document.getElementById('weekTab').addEventListener('click',function(){
     weeklyChartDetails["data"] = dataObj;
     weeklyChartDetails["options"] = {
       legend:{display:false},
-      title:{display:true,text:"Time Spent Online in the Past 7 Days"},
+      title:{display:true,text:"Time Spent Online in the Recent Past"},
       scales:{yAxes:[{scaleLabel:{display:true,labelString:"Time in Seconds"}}]}
     };
     new Chart(weeklyChart,weeklyChartDetails);
