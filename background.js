@@ -1,131 +1,99 @@
-function isValidURL(givenURL){
-  if(givenURL){
-    if(givenURL.includes(".")){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
-  else{
-    return false;
-  }
-}
-function secondsToString(seconds,compressed=false){
-    let hours = parseInt(seconds/3600);
-    seconds = seconds%3600;
-    let minutes= parseInt(seconds/60);
-    seconds = seconds%60;
-    let timeString = "";
-    if(hours){
-      timeString += hours + " hrs ";
-    }
-    if(minutes){
-      timeString += minutes + " min ";
-    }
-    if(seconds){
-      timeString += seconds+ " sec ";
-    }
-    if(!compressed){
-      return timeString;
-    }
-    else{
-      if(hours){
-        return(`${hours}h`);
-      }
-      if(minutes){
-        return(`${minutes}m`);
-      }
-      if(seconds){
-        return(`${seconds}s`);
-      }
-    }
-  };
-
-function getDateString(nDate){
-  let nDateDate=nDate.getDate();
-  let nDateMonth=nDate.getMonth()+1;
-  let nDateYear=nDate.getFullYear();
-  if(nDateDate<10){nDateDate="0"+nDateDate;};
-  if(nDateMonth<10){nDateMonth="0"+nDateMonth;};
-  let presentDate = nDateYear+"-"+nDateMonth+"-"+nDateDate;
-  return presentDate;
-}
-function getDomain(tablink){
-  if(tablink){
-    let url =  tablink[0].url;
-    return url.split("/")[2];
-  }
-  else{
-    return null;
-  }
-};
-
-function updateTime(){
-    chrome.tabs.query({"active":true,"lastFocusedWindow": true},function(activeTab){
-        let domain = getDomain(activeTab);
-        if(isValidURL(domain)){
-          let today = new Date();
-        let presentDate = getDateString(today);
-        let myObj = {};
-        myObj[presentDate]={};
-        myObj[presentDate][domain] = "";
-        let timeSoFar = 0;
-        chrome.storage.local.get(presentDate,function(storedObject){
-            if(storedObject[presentDate]){
-              if(storedObject[presentDate][domain]){
-                timeSoFar = storedObject[presentDate][domain]+1;
-                storedObject[presentDate][domain] = timeSoFar;
-                chrome.storage.local.set(storedObject,function(){
-                    console.log("Set "+domain+" at "+storedObject[presentDate][domain]);
-                    chrome.browserAction.setBadgeText({'text':secondsToString(timeSoFar,true)});
-                });
-              }
-              else{
-                timeSoFar++;
-                storedObject[presentDate][domain] = timeSoFar;
-                chrome.storage.local.set(storedObject,function(){
-                  console.log("Set "+domain+" at "+storedObject[presentDate][domain]);
-                  chrome.browserAction.setBadgeText({'text':secondsToString(timeSoFar,true)});
-                })
-              }
-            }
-            else{
-              timeSoFar++;
-              storedObject[presentDate] = {};
-              storedObject[presentDate][domain] = timeSoFar;
-              chrome.storage.local.set(storedObject,function(){
-                console.log("Set "+domain+" at "+storedObject[presentDate][domain]);
-                chrome.browserAction.setBadgeText({'text':secondsToString(timeSoFar,true)});
-              })
-            }
-        });
-        }
-      else{
-        chrome.browserAction.setBadgeText({'text':''});
-      }
+const lastActiveTabKey="lastActiveTab";
+const tabTimeObjectKey="tabTimesObject";
+chrome.runtime.onInstalled.addListener(function(){
+    
+    chrome.declarativeContent.onPageChanged.removeRules(undefined, function(){
+    chrome.declarativeContent.onPageChanged.addRules([{
+        conditions: [new chrome.declarativeContent.PageStateMatcher({
+        pageUrl:{},
+        })
+        ],
+            actions: [new chrome.declarativeContent.ShowPageAction()]
+        }]);
     });
+});
 
-    // console.log(timeSoFar);
-};
-
-var intervalID;
-
-intervalID = setInterval(updateTime,1000);
-setInterval(checkFocus,500)
-
-function checkFocus(){
-  chrome.windows.getCurrent(function(window){
-    if(window.focused){
-      if(!intervalID){
-        intervalID = setInterval(updateTime,1000);
-      }
+chrome.windows.onFocusChanged.addListener(function(windowId){
+    if (windowId==chrome.windows.WINDOW_ID_NONE){
+        processTabChange(false);
     }
     else{
-      if(intervalID){
-        clearInterval(intervalID);
-        intervalID=null;
-      }
+        processTabChange(true);
     }
-  });
+});
+
+function processTabChange(isWindowActive){
+    chrome.tabs.query({'active':true}, function(tabs){
+        console.log("isWindowActive: "+isWindowActive);
+        console.log(tabs);
+        if(tabs.length>0 && tabs[0]!=null){
+            let currentTab=tabs[0];
+            let url=currentTab.url;
+            let title=currentTab.title;
+            let hostName=url;
+            try{
+                let urlObject=new URL(url);
+                hostName=urlObject.hostname;
+            }
+            catch(e){
+                console.log(`Unable to construct url from ${currentTab.url}, error: ${e}`);
+            }
+            chrome.storage.local.get([tabTimeObjectKey, lastActiveTabKey], function(result){
+                let lastActiveTabString=result[lastActiveTabKey];
+                let tabTimeObjectString=result[tabTimeObjectKey];
+                console.log("background.js, get result");
+                console.log(result);
+                tabTimeObject={};
+                if(tabTimeObjectString!=null){
+                    tabTimeObject=JSON.parse(tabTimeObjectString);
+                }
+                lastActiveTab={};
+                if(lastActiveTabString!=null){
+                    lastActiveTab=JSON.parse(lastActiveTabString);
+                }
+                if(lastActiveTab.hasOwnProperty("url") && lastActiveTab.hasOwnProperty("lastDateVal")){
+                    let lastUrl=lastActiveTab["url"];
+                    let currentDateVal_=Date.now();
+                    let passedSeconds=(currentDateVal_-lastActiveTab["lastDateVal"])*0.001;//converting to sec from milli
+
+                    if(tabTimeObject.hasOwnProperty(lastUrl)){
+                        let lastUrlObjectInfo=tabTimeObject[lastUrl];
+                        if(lastUrlObjectInfo.hasOwnProperty("trackedSeconds")){
+                            lastUrlObjectInfo["trackedSeconds"]=lastUrlObjectInfo["trackedSeconds"]+passedSeconds;
+                        }
+                        else{
+                            lastUrlObjectInfo["trackedSeconds"]=passedSeconds;
+                        }
+                        lastUrlObjectInfo["lastDateVal"]=currentDateVal_;
+                    }
+                    else{
+                        let newUrlInfo={url: lastUrl, trackedSeconds:passedSeconds, lastDateVal: currentDateVal_};
+                        tabTimeObject[lastUrl]=newUrlInfo;
+                    }
+                }
+                let currentDateValue=Date.now();
+                let lastTabInfo={"url":hostName,"lastDateVal":currentDateValue};
+                if(!isWindowActive){
+                    lastTabInfo={};
+                }
+                let newLastTabObject={};
+                newLastTabObject[lastActiveTabKey]=JSON.stringify(lastTabInfo);
+                chrome.storage.local.set(newLastTabObject, function(){
+                    console.log("lastActive Tab stored is "+ hostName);
+                    const tabTimesObjectString=JSON.stringify(tabTimeObject);
+                    let newTabTimesObject={};
+                    newTabTimesObject[tabTimeObjectKey]=tabTimesObjectString;
+                    chrome.storage.local.set(newTabTimesObject, function(){
+
+                    });
+                });
+            });
+        }
+    });
 }
+function onTabTrack(activeInfo){
+    let tabId=activeInfo.tabId;
+    let windowId=activeInfo.windowId;
+    processTabChange(true);
+}
+chrome.tabs.onActivated.addListener(onTabTrack);

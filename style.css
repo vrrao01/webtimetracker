@@ -1,0 +1,9 @@
+button{
+    height: 40 px;
+    width: 100px;
+    outline: none;
+}
+#timetable{
+    width: 600px;
+    border: 1px solid black;
+}

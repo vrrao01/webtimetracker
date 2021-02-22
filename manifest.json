@@ -1,28 +1,24 @@
 {
-    "manifest_version": 2,
-    "name": "Web Time Tracker",
-    "version":"1.0.0",
-    "description":"Keeps track of time spent on various domains",
-    "icons": { 
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
-    },
+    "name" : "Time Tracker",
+    "version": "1.0",
+    "description": "A chrome extension to help users manage and analyze their productivity.",
+    "permissions":["activeTab", "declarativeContent","storage", "tabs"],
     "background": {
         "scripts": ["background.js"],
-        "persistent": true
+        "persistent": false
     },
-    "browser_action":{
-        "default_popup":"popup.html",
+    "icons":{
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+    },
+    "page_action": {
+        "default_popup": "popup.html",
         "default_icon": {
-            "16": "icons/icon16.png"
-        },
-        "default_title":"Web Time Tracker"
+            "16": "images/icon16.png"
+        }
     },
-    "permissions": [
-        "tabs",
-        "activeTab",
-        "storage",
-        "webNavigation"
-    ]
+    "options_page": "options.html",
+   
+    "manifest_version":2
 }
